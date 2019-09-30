@@ -1,0 +1,32 @@
+title Lomakkeen lähettäminen
+
+Selain->Palvelin: HTTP POST /new_note
+note over Palvelin: Palvelin lisää uuden muistiinpanon muistiinpanolistaan
+Palvelin->Selain: Status 302, uudelleenohjaus kohteeseen /notes
+Selain->Palvelin: HTTP GET /notes
+note right of Selain: Jatko on sama kuin materiaalin GET /notes sekvenssikaaviossa
+
+
+
+title SPA
+
+Selain->Palvelin: HTTP GET /spa
+Palvelin-->Selain: html-tiedosto
+note over Selain: html sisältää käskyt noutaa main.css ja spa.js
+Selain->Palvelin: HTTP GET /main.css
+Palvelin-->Selain: main.css
+Selain->Palvelin: HTTP GET /spa.ja
+Palvelin-->Selain: spa.ja
+note over Selain: spa.js sisältää käskyn noutaa data.json
+Selain->Palvelin: HTTP GET /data.json
+
+
+
+title Muistiinpanon luominen (SPA)
+
+note over Selain: Muistiinpano lisätään javascript-koodissa listalle
+Selain->Palvelin: POST /new_note_spa
+note left of Palvelin: Pyyntö sisältää uuden muistiinpanon tiedot
+Palvelin-->Selain: JSON-muotoinen vastaus {"message":"note created"}
+note over Palvelin: Muistiinpano talletetaan palvelimella
+note right of Selain: Ei muita pyyntöjä
