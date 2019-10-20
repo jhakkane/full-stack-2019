@@ -15,25 +15,30 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    let matches = getMatches()
+    let matches = countries.filter(country => 
+      country.name.toLowerCase().includes(query.toLowerCase()))
     if (matches.length !== 1) {
       setWeather({})
     } else {
-      let capital = matches[0].capital
-      let url = `http://api.apixu.com/v1/current.json?key=8ae33729efe54d79837155038190607&q=${capital}`
+      const capital = matches[0].capital
+      let url = `http://api.weatherstack.com/current?access_key=API_KEY_HIDDEN&units=m&query=${capital}`
       axios
         .get(url)
         .then(response => {
+          const data = response.data.current
           let newWeather = {
-            temp: response.data.current.temp_c,
-            windSpeed:  response.data.current.wind_kph,
-            windDir:  response.data.current.wind_dir,
-            icon: response.data.current.condition.icon
+            temp: data.temperature,
+            windSpeed:  data.wind_speed,
+            windDir:  data.wind_dir,
+            icon: data.weather_icons[0]
           }
           setWeather(newWeather)
         })
+        .catch(() => {
+          setWeather({})
+        })
     }
-  }, [query])
+  }, [query, countries])
 
   const queryChange = (event) => {
     setQuery(event.target.value)
@@ -70,14 +75,14 @@ const App = () => {
       </div>
       <h3>weather in {country.capital}</h3>
       <p>temperature: {weather.temp} Celsius</p>
-      <img src={weather.icon} />
+      <img src={weather.icon} alt="icon"/>
       <p>wind: {weather.windSpeed} kph direction {weather.windDir}</p>
     </div>
   )}
 
   const getMatches = () => {
-    return (countries.filter(country => 
-      country.name.toLowerCase().includes(query.toLowerCase())))
+    return countries.filter(country => 
+      country.name.toLowerCase().includes(query.toLowerCase()))
   }
 
   const showCountries = () => {
