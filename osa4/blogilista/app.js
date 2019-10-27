@@ -1,4 +1,5 @@
 const config = require('./utils/config')
+const middleware = require('./utils/middleware')
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
@@ -12,5 +13,7 @@ app.use(cors())
 app.use(bodyParser.json())
 
 app.use('/api/blogs', blogsRouter)
+
+app.use(middleware.errorHandler)
 
 module.exports = app

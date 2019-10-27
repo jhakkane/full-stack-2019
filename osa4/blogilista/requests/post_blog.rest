@@ -2,7 +2,7 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-  "title": "Hull Stack",
+  "title": "Stack Stack",
   "author": "Sauli Rusi",
   "url": "www.google.fi",
   "likes": 12

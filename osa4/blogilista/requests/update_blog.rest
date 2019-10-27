@@ -1,0 +1,9 @@
+PUT http://localhost:3003/api/blogs/5db58c0af893a906b06fcef5
+Content-Type: application/json
+
+{
+  "title": "Stack",
+  "author": "Sauli Rusi",
+  "url": "www.google.fi",
+  "likes": 333
+}
