@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const helper = require('./test_helper')
 
 const api = supertest(app)
@@ -9,7 +10,17 @@ const api = supertest(app)
 describe('with initial data', () => {
   beforeEach(async () => {
     await Blog.deleteMany({})
-    const blogs = helper.initialBlogs.map(blog => new Blog(blog))
+    await User.deleteMany({})
+
+    const initialUser = await helper.getInitialUser()
+    const user = new User(initialUser)
+    const savedUser = await user.save()
+
+    const blogs = helper.initialBlogs.map(blog => { 
+      blog.user = savedUser._id
+      return new Blog(blog)
+    })
+    
     const promises = blogs.map(blog => blog.save())
     await Promise.all(promises)
   })
@@ -39,15 +50,18 @@ describe('with initial data', () => {
         likes: 10
       }
 
+      const loginResponse = await helper.login(api)
+
       await api
         .post('/api/blogs')
+        .set('Authorization', 'Bearer ' + loginResponse.body.token)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
     
       const blogsInDB = await helper.getBlogsInDB()
       expect(blogsInDB.length).toBe(helper.initialBlogs.length + 1)
-      const blogsInDBFormatted = blogsInDB.map(blog => helper.removeId(blog))
+      const blogsInDBFormatted = blogsInDB.map(blog => helper.removeIrrelevantFields(blog))
       expect(blogsInDBFormatted).toContainEqual(newBlog)
     })
     
@@ -57,8 +71,12 @@ describe('with initial data', () => {
         author: 'S. Salminen',
         url: 'www.yle.fi',
       }
+
+      const loginResponse = await helper.login(api)
+
       const response = await api
         .post('/api/blogs')
+        .set('Authorization', 'Bearer ' + loginResponse.body.token)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -70,8 +88,12 @@ describe('with initial data', () => {
         title: 'Stack Stack',
         author: 'S. Salminen',
       }
+
+      const loginResponse = await helper.login(api)
+
       await api
         .post('/api/blogs')
+        .set('Authorization', 'Bearer ' + loginResponse.body.token)
         .send(newBlog)
         .expect(400)
     
@@ -84,8 +106,12 @@ describe('with initial data', () => {
         author: 'S. Salminen',
         url: 'www.google.com'
       }
+
+      const loginResponse = await helper.login(api)
+
       await api
         .post('/api/blogs')
+        .set('Authorization', 'Bearer ' + loginResponse.body.token)
         .send(newBlog)
         .expect(400)
     
@@ -98,8 +124,12 @@ describe('with initial data', () => {
     test('blog can be deleted', async () => {
       const blogsInStart = await helper.getBlogsInDB()
       const deletableBlog = blogsInStart[0]
+
+      const loginResponse = await helper.login(api)
+
       await api
         .delete(`/api/blogs/${deletableBlog.id}`)
+        .set('Authorization', 'Bearer ' + loginResponse.body.token)
         .expect(204)
       const blogsInEnd = await helper.getBlogsInDB()
       expect(blogsInEnd.length).toBe(helper.initialBlogs.length - 1)

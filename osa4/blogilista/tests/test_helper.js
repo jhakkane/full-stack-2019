@@ -1,4 +1,16 @@
 const Blog = require('../models/blog')
+const bcrypt = require('bcrypt')
+
+const testUserUsername = 'test'
+const testUserPassword = 'testPassword'
+const saltRounds = 10
+
+const getInitialUser = async () => {
+  return {
+    username: testUserUsername,
+    passwordHash: await bcrypt.hash(testUserPassword, saltRounds)
+  }
+}
 
 const initialBlogs = [
   {
@@ -15,17 +27,28 @@ const initialBlogs = [
   },
 ]
 
+const login = async api => {
+  const token = await api
+    .post('/api/login')
+    .send({
+      username: testUserUsername,
+      password: testUserPassword
+    })
+  return token
+}
+
 const getBlogsInDB = async () => {
   const blogs = await Blog.find({})
   return blogs.map(blog => blog.toJSON())
 }
 
-const removeId = blog => {
+const removeIrrelevantFields = blog => {
   const formattedBlog = {...blog}
   delete formattedBlog.id
+  delete formattedBlog.user
   return formattedBlog
 }
 
 module.exports = {
-  initialBlogs, getBlogsInDB, removeId
+  getInitialUser, getBlogsInDB, initialBlogs, login, removeIrrelevantFields
 }
