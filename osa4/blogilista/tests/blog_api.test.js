@@ -38,7 +38,7 @@ describe('with initial data', () => {
         url: 'www.yle.fi',
         likes: 10
       }
-      
+
       await api
         .post('/api/blogs')
         .send(newBlog)
