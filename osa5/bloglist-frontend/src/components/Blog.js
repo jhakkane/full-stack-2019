@@ -32,7 +32,7 @@ const Blog = ({ blog, addLike, removeBlog, user }) => {
   )
 
   return (
-    <div style={blogStyle} onClick={() => setExtended(!extended)}>
+    <div style={blogStyle} onClick={() => setExtended(!extended)} className='blog'>
       {extended ? extendedContents() : conciseContents() }
     </div>
   )
