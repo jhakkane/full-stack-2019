@@ -5,6 +5,7 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 import './index.css'
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('') 
   const [message, setMessage] = useState('') 
+  const newBlogForm = React.createRef()
 
   useEffect(() => {
     blogService
@@ -30,6 +32,47 @@ function App() {
     }
   }, [])
 
+  const formatBlogForBackEnd = (blog) => {
+    return {
+      author: blog.author,
+      title: blog.title,
+      url: blog.url,
+      likes: blog.likes,
+      user: blog.user.id
+    }
+  }
+
+  const addLike = (blogToUpdate) => {
+    let formattedBlog = formatBlogForBackEnd(blogToUpdate)
+    formattedBlog.likes++
+    blogService
+      .updateBlog(blogToUpdate.id, formattedBlog)
+      .then(updatedBlog => {
+        let newBlogs = blogs.filter(blog => blog.id !== updatedBlog.id)
+        newBlogs.push(updatedBlog)
+        setBlogs(newBlogs)
+        createNotification(`You liked the blog ${updatedBlog.title}!`)
+      })
+      .catch(() => {
+        createNotification('Adding a like failed!', 'error')
+      })
+  }
+
+  const removeBlog = (blogToRemove) => {
+    let removalConfirmed = window.confirm(`Remove blog ${blogToRemove.title} by ${blogToRemove.author}?`)
+    if (!removalConfirmed) return;
+
+    blogService
+      .removeBlog(blogToRemove.id)
+      .then(() => {
+        setBlogs(blogs.filter(blog => blog.id !== blogToRemove.id))
+        createNotification(`Blog ${blogToRemove.title} has been deleted!`)
+      })
+      .catch(() => {
+        createNotification('Removing the blog failed!', 'error')
+      })
+  }
+
   const createNotification = (text, style) => {
     style = style || 'success'
     let newMessage = {text, style}
@@ -40,6 +83,7 @@ function App() {
   }
 
   const createBlog = blog => {
+    newBlogForm.current.toggleVisibility()
     blogService
       .createNew(blog)
       .then(newBlog => {
@@ -99,8 +143,12 @@ function App() {
           Logout
         </button>
       </p>
-      <Bloglist blogs={blogs} />
-      <NewBlogForm createBlog={createBlog}/>
+
+      <Bloglist blogs={blogs} addLike={addLike} removeBlog={removeBlog} user={user}/>
+
+      <Togglable buttonLabel="New blog" ref={newBlogForm}>
+        <NewBlogForm createBlog={createBlog}/>
+      </Togglable>
 
     </div>
   )
