@@ -12,9 +12,9 @@ function App() {
 
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [username, setUsername] = useState('') 
-  const [password, setPassword] = useState('') 
-  const [message, setMessage] = useState('') 
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [message, setMessage] = useState('')
   const newBlogForm = React.createRef()
 
   useEffect(() => {
@@ -60,7 +60,7 @@ function App() {
 
   const removeBlog = (blogToRemove) => {
     let removalConfirmed = window.confirm(`Remove blog ${blogToRemove.title} by ${blogToRemove.author}?`)
-    if (!removalConfirmed) return;
+    if (!removalConfirmed) return
 
     blogService
       .removeBlog(blogToRemove.id)
@@ -75,10 +75,10 @@ function App() {
 
   const createNotification = (text, style) => {
     style = style || 'success'
-    let newMessage = {text, style}
-    setMessage(newMessage);
+    let newMessage = { text, style }
+    setMessage(newMessage)
     setTimeout(() => {
-      setMessage(null);
+      setMessage(null)
     }, 5000)
   }
 
@@ -101,8 +101,8 @@ function App() {
     loginService
       .login(credentials)
       .then(user => {
-        setUser(user) 
-        window.localStorage.setItem('loggedBloglistUser', JSON.stringify(user))       
+        setUser(user)
+        window.localStorage.setItem('loggedBloglistUser', JSON.stringify(user))
         setUsername('')
         setPassword('')
         blogService.setToken(user.token)
@@ -121,13 +121,13 @@ function App() {
     return (
       <div>
         <Notification message={message} />
-        <LoginForm 
-          handleLogin={handleLogin} 
+        <LoginForm
+          handleLogin={handleLogin}
           username={username} setUsername={setUsername}
           password={password} setPassword={setPassword}
         />
       </div>
-    ) 
+    )
   }
 
   return (
@@ -155,4 +155,4 @@ function App() {
 
 }
 
-export default App;
+export default App
