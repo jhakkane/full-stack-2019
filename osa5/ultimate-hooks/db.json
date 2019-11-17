@@ -1,0 +1,54 @@
+{
+  "notes": [
+    {
+      "content": "custom-hooks are awesome!",
+      "id": 1
+    },
+    {
+      "content": "best feature ever <3",
+      "id": 2
+    },
+    {
+      "content": "pekka",
+      "id": 3
+    },
+    {
+      "content": "körmäse sale",
+      "id": 4
+    },
+    {
+      "content": "Jepa jee",
+      "id": 5
+    },
+    {
+      "content": "OK Spede",
+      "id": 6
+    },
+    {
+      "content": "Jepa",
+      "id": 7
+    }
+  ],
+  "persons": [
+    {
+      "name": "mluukkai",
+      "number": "040-5483923",
+      "id": 1
+    },
+    {
+      "name": "Saemon Havarian",
+      "number": "044200294",
+      "id": 2
+    },
+    {
+      "name": "Sami-Petteri Jansson",
+      "number": "000000000",
+      "id": 3
+    },
+    {
+      "name": "Janne-Poika",
+      "number": "111",
+      "id": 4
+    }
+  ]
+}
