@@ -12,8 +12,6 @@ function App() {
 
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [message, setMessage] = useState('')
   const newBlogForm = React.createRef()
 
@@ -95,16 +93,12 @@ function App() {
       })
   }
 
-  const handleLogin = (event) => {
-    event.preventDefault()
-    const credentials = { username, password }
+  const handleLogin = (credentials) => {
     loginService
       .login(credentials)
       .then(user => {
         setUser(user)
         window.localStorage.setItem('loggedBloglistUser', JSON.stringify(user))
-        setUsername('')
-        setPassword('')
         blogService.setToken(user.token)
       })
       .catch(() => {
@@ -123,8 +117,6 @@ function App() {
         <Notification message={message} />
         <LoginForm
           handleLogin={handleLogin}
-          username={username} setUsername={setUsername}
-          password={password} setPassword={setPassword}
         />
       </div>
     )

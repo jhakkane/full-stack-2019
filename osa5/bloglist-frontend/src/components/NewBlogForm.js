@@ -1,18 +1,19 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
+import  { useField } from '../hooks'
 
 const NewBlogForm = ({ createBlog }) => {
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+  const [titleField, resetTitle] = useField('text')
+  const [authorField, resetAuthor] = useField('text')
+  const [urlField, resetUrl] = useField('text')
 
   const submit = event => {
     event.preventDefault()
-    const blog = { title, author, url }
+    const blog = { title: titleField.value, author: authorField.value, url: urlField.value }
     createBlog(blog)
-    setTitle('')
-    setAuthor('')
-    setUrl('')
+    resetTitle()
+    resetAuthor()
+    resetUrl()
   }
 
   return (
@@ -22,26 +23,20 @@ const NewBlogForm = ({ createBlog }) => {
         <div>
           Title
           <input
-            type="text"
-            value={title}
-            name="Title"
-            onChange={({ target }) => setTitle(target.value)}/>
+            {...titleField}
+            name="Title"/>
         </div>
         <div>
           Author
           <input
-            type="text"
-            value={author}
-            name="Author"
-            onChange={({ target }) => setAuthor(target.value)}/>
+            {...authorField}
+            name="Author"/>
         </div>
         <div>
           URL
           <input
-            type="text"
-            value={url}
-            name="URL"
-            onChange={({ target }) => setUrl(target.value)}/>
+            {...urlField}
+            name="URL"/>
         </div>
         <button type="submit">Submit</button>
       </form>
