@@ -7,6 +7,21 @@ const reducer = (state = null, action) => {
   }
 }
 
+export const setNotification = (notification, time) => {
+  return async (dispatch) => {
+    dispatch({
+      type: 'ADD_NOTIFICATION',
+      data: notification
+    })
+    setTimeout(() => {
+      dispatch({
+        type: 'ADD_NOTIFICATION',
+        data: null
+      })
+    }, time * 1000)
+  }
+}
+
 export const addNotification = (notification) => {
   return {
     type: 'ADD_NOTIFICATION',
