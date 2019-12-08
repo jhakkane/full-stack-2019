@@ -1,0 +1,10 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNwZWRlMSIsImlkIjoiNWRiZDM0MjBiZTA0MWUzM2E0MTczMWQyIiwiaWF0IjoxNTcyNjgxNTM0fQ.SSvrSVqxZnex_5xfq-mpCAIxDvWBhru1GaEmdj-6Ba8
+
+{
+  "title": "Quarter Stack",
+  "author": "Sami Rusi",
+  "url": "www.google.fi",
+  "likes": 12
+}
