@@ -1,49 +1,95 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
+import React from 'react'
+import { connect } from 'react-redux'
+import blogService from '../services/blogs'
+import { setNotification } from '../reducers/notificationReducer'
+import { removeBlog, updateBlog } from '../reducers/blogReducer'
+import {
+  withRouter
+} from 'react-router-dom'
 
-const Blog = ({ blog, addLike, removeBlog, user }) => {
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
+const Blog = ({ blog, addLike, removeBlog, updateBlog, setNotification, user, ...props }) => {
+
+  const like = (blogToUpdate) => {
+    const formatBlogForBackEnd = (blog) => {
+      return {
+        author: blog.author,
+        title: blog.title,
+        url: blog.url,
+        likes: blog.likes,
+        user: blog.user.id
+      }
+    }
+
+    let formattedBlog = formatBlogForBackEnd(blogToUpdate)
+    formattedBlog.likes++
+    blogService
+      .updateBlog(blogToUpdate.id, formattedBlog)
+      .then(updatedBlog => {
+        updateBlog(updatedBlog)
+        setNotification(`You liked the blog ${updatedBlog.title}!`)
+      })
+      .catch(() => {
+        setNotification('Adding a like failed!', 'error')
+      })
   }
 
-  const [extended, setExtended] = useState(false)
+  const remove = (blogToRemove) => {
+    let removalConfirmed = window.confirm(`Remove blog ${blogToRemove.title} by ${blogToRemove.author}?`)
+    if (!removalConfirmed) return
 
-  const extendedContents = () => (
-    <div>
-      {blog.title} {blog.author}<br/>
-      {blog.url}<br/>
-      {blog.likes} likes <button onClick={() => addLike(blog)}>Like</button><br/>
-      Added by {blog.user.username}<br/>
-      {
-        blog.user && user.username === blog.user.username &&
-        <button onClick={() => removeBlog(blog)}>Remove</button>
-      }
-    </div>
-  )
+    blogService
+      .removeBlog(blogToRemove.id)
+      .then(() => {
+        removeBlog(blogToRemove.id)
+        setNotification(`Blog ${blogToRemove.title} has been deleted!`)
+        props.history.push('/blogs')
+      })
+      .catch(error => {
+        console.log(error)
+        setNotification('Removing the blog failed!', 'error')
+      })
+  }
 
-  const conciseContents = () => (
-    <div>
-      {blog.title} {blog.author}
-    </div>
-  )
+  if (blog === undefined) {
+    return null
+  }
 
   return (
-    <div style={blogStyle} onClick={() => setExtended(!extended)} className='blog'>
-      {extended ? extendedContents() : conciseContents() }
+    <div>
+      <h2>{blog.title} {blog.author}</h2>
+      {blog.url}<br/>
+      {blog.likes} likes <button onClick={() => like(blog)}>Like</button><br/>
+      Added by {blog.user ? blog.user.username : 'unknown'}<br/>
+      {
+        blog.user && props.loggedInUser.username === blog.user.username &&
+        <button onClick={() => remove(blog)}>Remove</button>
+      }<br/>
+      {blog.comments &&
+      <div>
+        <h3>Comments</h3>
+        <ul>
+          {blog.comments.map(comment =>
+            <li key={comment.id}>
+              {comment.text}
+            </li>
+          )}
+        </ul>
+      </div>}
     </div>
   )
-
 }
 
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  addLike: PropTypes.func.isRequired,
-  removeBlog: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired,
+const mapDispatchToProps = {
+  setNotification,
+  removeBlog,
+  updateBlog,
 }
 
-export default Blog
+const mapStateToProps = (state, ownProps) => {
+  return {
+    blog: state.blogs.find(blog => blog.id === ownProps.id),
+    loggedInUser: state.loggedInUser
+  }
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Blog))

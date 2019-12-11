@@ -8,7 +8,7 @@ const reducer = (state = null, action) => {
 }
 
 export const setLoggedInUser = (user) => {
-  return async (dispatch) => {
+  return (dispatch) => {
     dispatch({
       type: 'SET_USER',
       data: user,

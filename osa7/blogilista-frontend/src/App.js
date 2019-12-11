@@ -2,22 +2,24 @@ import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import {
   BrowserRouter as Router,
-  Route, Link, Redirect, withRouter
+  Route, Redirect
 } from 'react-router-dom'
 import Bloglist from './components/Bloglist'
 import NewBlogForm from './components/NewBlogForm'
 import blogService from './services/blogs'
-import loginService from './services/login'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import UsersList from './components/UsersList'
+import User from './components/User'
+import Blog from './components/Blog'
 import { setNotification } from './reducers/notificationReducer'
 import { initializeBlogs } from './reducers/blogReducer'
 import { setLoggedInUser } from './reducers/loggedInUserReducer'
 import './index.css'
+import NavigationMenu from './components/NavigationMenu'
 
-function App({ blogs, initializeBlogs, loggedInUser, setNotification, setLoggedInUser, 
+function App({ blogs, initializeBlogs, loggedInUser, setNotification, setLoggedInUser,
   ...props }) {
 
   const newBlogForm = React.createRef()
@@ -26,7 +28,7 @@ function App({ blogs, initializeBlogs, loggedInUser, setNotification, setLoggedI
     blogService
       .getAll()
       .then(initialBlogs => initializeBlogs(initialBlogs))
-  }, [])
+  }, [initializeBlogs])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
@@ -35,12 +37,7 @@ function App({ blogs, initializeBlogs, loggedInUser, setNotification, setLoggedI
       setLoggedInUser(loggedUser)
       blogService.setToken(loggedUser.token)
     }
-  }, [])
-
-  const handleLogout = () => {
-    setLoggedInUser(null)
-    window.localStorage.clear()
-  }
+  }, [setLoggedInUser])
 
   const closeForm = () => {
     newBlogForm.current.toggleVisibility()
@@ -56,27 +53,20 @@ function App({ blogs, initializeBlogs, loggedInUser, setNotification, setLoggedI
     </div>
   )
 
-  const loggedInUserInfo = () => (
-    <p>
-      {loggedInUser.name} logged in
-      <button onClick={handleLogout}>
-        Logout
-      </button>
-    </p>
-  )
-
   return (
     <div>
       <Notification/>
-
-      {loggedInUser && loggedInUserInfo()}
-
       <Router>
-        <Route exact path="/" render={() => loggedInUser ?
-          blogPage() : <Redirect to="/login" />
-        } />
-        <Route path="/users" render={() => <UsersList />} />
+        <NavigationMenu />
+
+        <Route exact path="/" render={() => loggedInUser ? <Redirect to="/blogs" /> : <Redirect to="/login" />} />
         <Route path="/login" render={() => <LoginForm />} />
+
+        <Route exact path="/blogs" render={() => blogPage()} />
+        <Route exact path="/blogs/:id" render={({ match }) => <Blog id={match.params.id} />} />
+
+        <Route exact path="/users" render={() => <UsersList />} />
+        <Route exact path="/users/:id" render={({ match }) => <User userId={match.params.id} />} />
       </Router>
     </div>
   )

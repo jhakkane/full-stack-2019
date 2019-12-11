@@ -1,12 +1,14 @@
 const jwt = require('jsonwebtoken')
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
+const Comment = require('../models/comment')
 const User = require('../models/user')
 
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog
     .find({})
     .populate('user', {id: 1, username: 1, name: 1})
+    .populate('comments', {text: 1})
   return response.json(blogs.map(blog => blog.toJSON()))
 })
 
@@ -53,6 +55,7 @@ blogsRouter.post('/', async (request, response, next) => {
     savedBlog = await Blog
       .findById(savedBlog.id)
       .populate('user', {id: 1, username: 1, name: 1})
+      .populate('comments', {text: 1})
     
     response.status(201).json(savedBlog.toJSON())
   } catch (exception) {
@@ -72,7 +75,29 @@ blogsRouter.put('/:id', async (request, response, next) => {
     const updatedBlog = await Blog
       .findByIdAndUpdate(request.params.id, newData, {new: true})
       .populate('user', {id: 1, username: 1, name: 1})
+      .populate('comments', {text: 1})
     response.json(updatedBlog.toJSON())
+  } catch (exception) {
+    next(exception)
+  }
+})
+
+blogsRouter.post('/:id/comments', async (request, response, next) => {
+  const body = request.body
+  try {
+    const blog = await Blog.findById(request.params.id)
+    console.log(blog)
+
+    const comment = new Comment({
+      text: body.text,
+      blog: blog._id
+    })
+
+    blog.comments.push(comment)
+
+    await blog.save()
+    await comment.save()   
+    response.status(201).json(comment.toJSON())
   } catch (exception) {
     next(exception)
   }

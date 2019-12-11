@@ -1,9 +1,15 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
+import {
+  Link,
+  useRouteMatch,
+} from 'react-router-dom'
 import { initializeUsers } from '../reducers/userReducer'
 import userService from '../services/users'
 
 const UserList = ({ initializeUsers, ...props }) => {
+
+  let match = useRouteMatch()
 
   useEffect(() => {
     userService
@@ -23,7 +29,7 @@ const UserList = ({ initializeUsers, ...props }) => {
         {props.sortedUsers.map(user =>
           <tr key={user.id}>
             <td>
-              {user.name}
+              <Link to={`${match.path}/${user.id}`}>{user.name}</Link>
             </td>
             <td>
               {user.blogs.length}
