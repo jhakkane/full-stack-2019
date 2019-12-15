@@ -24,4 +24,5 @@ const getAll = async () => {
 
 const setToken = () => {}
 
-export default { getAll, setToken }
+export default { getAll,
+  setToken }

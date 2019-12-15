@@ -52,11 +52,8 @@ blogsRouter.post('/', async (request, response, next) => {
     savedBlog.user = currentUser
     currentUser.blogs = currentUser.blogs.concat(savedBlog._id)
     await currentUser.save()
-    savedBlog = await Blog
-      .findById(savedBlog.id)
-      .populate('user', {id: 1, username: 1, name: 1})
-      .populate('comments', {text: 1})
-    
+    savedBlog = await getSingleBlog(savedBlog.id)
+
     response.status(201).json(savedBlog.toJSON())
   } catch (exception) {
     next(exception)
@@ -86,7 +83,6 @@ blogsRouter.post('/:id/comments', async (request, response, next) => {
   const body = request.body
   try {
     const blog = await Blog.findById(request.params.id)
-    console.log(blog)
 
     const comment = new Comment({
       text: body.text,
@@ -96,11 +92,20 @@ blogsRouter.post('/:id/comments', async (request, response, next) => {
     blog.comments.push(comment)
 
     await blog.save()
-    await comment.save()   
-    response.status(201).json(comment.toJSON())
+    await comment.save()
+    const updatedBlog = await getSingleBlog(blog.id)
+    response.status(201).json(updatedBlog.toJSON())
   } catch (exception) {
     next(exception)
   }
 })
+
+async function getSingleBlog(id) {
+  const blog = await Blog
+    .findById(id)
+    .populate('user', {id: 1, username: 1, name: 1})
+    .populate('comments', {text: 1})
+  return blog
+}
 
 module.exports = blogsRouter

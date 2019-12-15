@@ -20,7 +20,7 @@ describe('<App />', () => {
     expect(newBlogButton).toBe(null)
   })
 
-  test('if user is logged in, notes and new blog form are rendered', async() => {
+  test('if user is logged in, notes and new blog form are rendered', async () => {
     const user = {
       username: 'tester',
       token: '1231231214',

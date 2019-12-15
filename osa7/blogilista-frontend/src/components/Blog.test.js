@@ -39,4 +39,3 @@ describe('Blog', () => {
     expect(component.container).toHaveTextContent('Remove')
   })
 })
-

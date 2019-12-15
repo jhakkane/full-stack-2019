@@ -1,7 +1,10 @@
 const reducer = (state = [], action) => {
   switch (action.type) {
   case 'ADD_BLOG':
-    return [...state, action.data]
+    return [
+      ...state,
+      action.data
+    ]
   case 'INIT_BLOGS':
     return action.data
   case 'REMOVE_BLOG':

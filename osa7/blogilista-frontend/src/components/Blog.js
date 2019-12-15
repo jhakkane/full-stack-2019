@@ -1,13 +1,14 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import blogService from '../services/blogs'
-import { setNotification } from '../reducers/notificationReducer'
-import { removeBlog, updateBlog } from '../reducers/blogReducer'
 import {
   withRouter
 } from 'react-router-dom'
+import blogService from '../services/blogs'
+import { setNotification } from '../reducers/notificationReducer'
+import { removeBlog, updateBlog } from '../reducers/blogReducer'
+import NewCommentForm from '../components/NewCommentForm'
 
-const Blog = ({ blog, addLike, removeBlog, updateBlog, setNotification, user, ...props }) => {
+const Blog = ({ blog, removeBlog, updateBlog, setNotification, ...props }) => {
 
   const like = (blogToUpdate) => {
     const formatBlogForBackEnd = (blog) => {
@@ -22,29 +23,31 @@ const Blog = ({ blog, addLike, removeBlog, updateBlog, setNotification, user, ..
 
     let formattedBlog = formatBlogForBackEnd(blogToUpdate)
     formattedBlog.likes++
-    blogService
-      .updateBlog(blogToUpdate.id, formattedBlog)
-      .then(updatedBlog => {
+    blogService.
+      updateBlog(blogToUpdate.id, formattedBlog).
+      then((updatedBlog) => {
         updateBlog(updatedBlog)
         setNotification(`You liked the blog ${updatedBlog.title}!`)
-      })
-      .catch(() => {
+      }).
+      catch(() => {
         setNotification('Adding a like failed!', 'error')
       })
   }
 
   const remove = (blogToRemove) => {
     let removalConfirmed = window.confirm(`Remove blog ${blogToRemove.title} by ${blogToRemove.author}?`)
-    if (!removalConfirmed) return
+    if (!removalConfirmed) {
+      return
+    }
 
-    blogService
-      .removeBlog(blogToRemove.id)
-      .then(() => {
+    blogService.
+      removeBlog(blogToRemove.id).
+      then(() => {
         removeBlog(blogToRemove.id)
         setNotification(`Blog ${blogToRemove.title} has been deleted!`)
         props.history.push('/blogs')
-      })
-      .catch(error => {
+      }).
+      catch((error) => {
         console.log(error)
         setNotification('Removing the blog failed!', 'error')
       })
@@ -67,6 +70,7 @@ const Blog = ({ blog, addLike, removeBlog, updateBlog, setNotification, user, ..
       {blog.comments &&
       <div>
         <h3>Comments</h3>
+        <NewCommentForm blogId={blog.id}/>
         <ul>
           {blog.comments.map(comment =>
             <li key={comment.id}>

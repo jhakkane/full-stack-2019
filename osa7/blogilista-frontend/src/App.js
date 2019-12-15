@@ -19,15 +19,14 @@ import { setLoggedInUser } from './reducers/loggedInUserReducer'
 import './index.css'
 import NavigationMenu from './components/NavigationMenu'
 
-function App({ blogs, initializeBlogs, loggedInUser, setNotification, setLoggedInUser,
-  ...props }) {
+function App ({ initializeBlogs, loggedInUser, setLoggedInUser }) {
 
   const newBlogForm = React.createRef()
 
   useEffect(() => {
-    blogService
-      .getAll()
-      .then(initialBlogs => initializeBlogs(initialBlogs))
+    blogService.
+      getAll().
+      then(initialBlogs => initializeBlogs(initialBlogs))
   }, [initializeBlogs])
 
   useEffect(() => {
@@ -43,7 +42,7 @@ function App({ blogs, initializeBlogs, loggedInUser, setNotification, setLoggedI
     newBlogForm.current.toggleVisibility()
   }
 
-  const blogPage = () => (
+  const blogPage = () =>
     <div>
       <h2>Blogs</h2>
       <Bloglist/>
@@ -51,10 +50,10 @@ function App({ blogs, initializeBlogs, loggedInUser, setNotification, setLoggedI
         <NewBlogForm closeForm={closeForm}/>
       </Togglable>
     </div>
-  )
+
 
   return (
-    <div>
+    <div className="container">
       <Notification/>
       <Router>
         <NavigationMenu />

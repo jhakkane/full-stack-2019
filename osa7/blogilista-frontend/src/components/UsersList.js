@@ -4,6 +4,7 @@ import {
   Link,
   useRouteMatch,
 } from 'react-router-dom'
+import { Table } from 'react-bootstrap'
 import { initializeUsers } from '../reducers/userReducer'
 import userService from '../services/users'
 
@@ -12,13 +13,13 @@ const UserList = ({ initializeUsers, ...props }) => {
   let match = useRouteMatch()
 
   useEffect(() => {
-    userService
-      .getAll()
-      .then(users => initializeUsers(users))
+    userService.
+      getAll().
+      then(users => initializeUsers(users))
   }, [initializeUsers])
 
   return (
-    <table>
+    <Table striped bordered>
       <thead>
         <tr>
           <th></th>
@@ -37,7 +38,7 @@ const UserList = ({ initializeUsers, ...props }) => {
           </tr>
         )}
       </tbody>
-    </table>
+    </Table>
   )
 }
 

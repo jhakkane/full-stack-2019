@@ -12,8 +12,8 @@ export const setNotification = (text, style = 'success', time = 5) => {
     dispatch({
       type: 'ADD_NOTIFICATION',
       data: {
-        text: text,
-        style: style
+        text,
+        style
       }
     })
     setTimeout(() => {

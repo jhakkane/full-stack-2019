@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 const User = ({ user }) => {
-  if ( user === undefined) {
+  if (user === undefined) {
     return null
   }
 
