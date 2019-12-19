@@ -26,17 +26,17 @@ const NewBlogForm = (props) => {
     const blog = { title: titleField.value,
       author: authorField.value,
       url: urlField.value }
-    blogService.
-      createNew(blog).
-      then((newBlog) => {
+    blogService
+      .createNew(blog)
+      .then((newBlog) => {
         props.addBlog(newBlog)
         props.setNotification(`A new blog ${blog.title} by ${blog.author} added`)
         resetTitle()
         resetAuthor()
         resetUrl()
         props.closeForm()
-      }).
-      catch(() => {
+      })
+      .catch(() => {
         props.setNotification('Creating new blog failed!', 'error')
       })
   }
@@ -50,22 +50,25 @@ const NewBlogForm = (props) => {
           <Form.Control
             {...titleField}
             name="Title"
+            data-cy="title"
           ></Form.Control>
 
           <Form.Label>Author</Form.Label>
           <Form.Control
             {...authorField}
             name="Author"
+            data-cy="author"
           ></Form.Control>
 
           <Form.Label>URL</Form.Label>
           <Form.Control
             {...urlField}
             name="URL"
+            data-cy="url"
           ></Form.Control>
         </Form.Group>
 
-        <Button variant="primary" type="submit">
+        <Button data-cy="submit-blog" variant="primary" type="submit">
           Submit
         </Button>
       </Form>

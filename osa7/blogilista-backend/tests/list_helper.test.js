@@ -51,15 +51,6 @@ const blogs = [
   }  
 ]
 
-describe('dummy', () => {
-  test('dummy returns one', () => {
-    const blogs = []
-  
-    const result = listHelper.dummy(blogs)
-    expect(result).toBe(1)
-  })
-})
-
 describe('totalLikes', () => {
   test('of empty lists is zero', () => {
     expect(listHelper.totalLikes([])).toBe(0)

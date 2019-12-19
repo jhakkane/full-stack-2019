@@ -27,15 +27,15 @@ const LoginForm = ({ setLoggedInUser, setNotification, ...props }) => {
       password: passwordField.value }
     resetUsername()
     resetPassword()
-    loginService.
-      login(credentials).
-      then((user) => {
+    loginService
+      .login(credentials)
+      .then((user) => {
         setLoggedInUser(user)
         window.localStorage.setItem('loggedBloglistUser', JSON.stringify(user))
         blogService.setToken(user.token)
         props.history.push('/')
-      }).
-      catch((error) => {
+      })
+      .catch((error) => {
         console.log(error)
         setNotification('Wrong username or password!', 'error')
       })
@@ -48,15 +48,17 @@ const LoginForm = ({ setLoggedInUser, setNotification, ...props }) => {
         <Form.Group>
           <Form.Label>Username</Form.Label>
           <Form.Control
+            data-cy="username"
             { ...usernameField }
           ></Form.Control>
 
           <Form.Label>Password</Form.Label>
           <Form.Control
+            data-cy="password"
             { ...passwordField }
           ></Form.Control>
 
-          <Button type="submit">
+          <Button data-cy="login" type="submit">
             Login
           </Button>
         </Form.Group>

@@ -14,14 +14,14 @@ const NewCommentForm = (props) => {
   const submit = (event) => {
     event.preventDefault()
     const comment = { text: textField.value }
-    blogService.
-      addComment(props.blogId, comment).
-      then((updatedBlog) => {
+    blogService
+      .addComment(props.blogId, comment)
+      .then((updatedBlog) => {
         props.setNotification(`A new comment '${comment.text}' added`)
         props.updateBlog(updatedBlog)
         resetText()
-      }).
-      catch(() => {
+      })
+      .catch(() => {
         props.setNotification('Creating new comment failed!', 'error')
       })
   }

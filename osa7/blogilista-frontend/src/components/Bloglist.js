@@ -18,7 +18,7 @@ const Bloglist = ({ ...props }) => {
         {props.sortedBlogs.map(blog =>
           <tr key={blog.id}>
             <td>
-              <Link to={`${match.path}/${blog.id}`}>
+              <Link name="blog-link" to={`${match.path}/${blog.id}`}>
                 {blog.title} {blog.author}
               </Link>
             </td>

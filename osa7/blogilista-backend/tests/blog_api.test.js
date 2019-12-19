@@ -3,6 +3,7 @@ const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const Comment = require('../models/comment')
 const helper = require('./test_helper')
 
 const api = supertest(app)
@@ -11,6 +12,7 @@ describe('with initial data', () => {
   beforeEach(async () => {
     await Blog.deleteMany({})
     await User.deleteMany({})
+    await Comment.deleteMany({})
 
     const initialUser = await helper.getInitialUser()
     const user = new User(initialUser)
@@ -47,7 +49,8 @@ describe('with initial data', () => {
         title: 'Stack Stack',
         author: 'S. Salminen',
         url: 'www.yle.fi',
-        likes: 10
+        likes: 10,
+        comments: []
       }
 
       const loginResponse = await helper.login(api)

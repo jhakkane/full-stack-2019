@@ -23,13 +23,13 @@ const Blog = ({ blog, removeBlog, updateBlog, setNotification, ...props }) => {
 
     let formattedBlog = formatBlogForBackEnd(blogToUpdate)
     formattedBlog.likes++
-    blogService.
-      updateBlog(blogToUpdate.id, formattedBlog).
-      then((updatedBlog) => {
+    blogService
+      .updateBlog(blogToUpdate.id, formattedBlog)
+      .then((updatedBlog) => {
         updateBlog(updatedBlog)
         setNotification(`You liked the blog ${updatedBlog.title}!`)
-      }).
-      catch(() => {
+      })
+      .catch(() => {
         setNotification('Adding a like failed!', 'error')
       })
   }
@@ -40,14 +40,14 @@ const Blog = ({ blog, removeBlog, updateBlog, setNotification, ...props }) => {
       return
     }
 
-    blogService.
-      removeBlog(blogToRemove.id).
-      then(() => {
+    blogService
+      .removeBlog(blogToRemove.id)
+      .then(() => {
         removeBlog(blogToRemove.id)
         setNotification(`Blog ${blogToRemove.title} has been deleted!`)
         props.history.push('/blogs')
-      }).
-      catch((error) => {
+      })
+      .catch((error) => {
         console.log(error)
         setNotification('Removing the blog failed!', 'error')
       })

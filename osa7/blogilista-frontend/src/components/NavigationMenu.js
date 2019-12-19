@@ -26,29 +26,20 @@ const NavigationMenu = ({ loggedInUser, setLoggedInUser, ...props }) => {
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav className="mr-auto">
           <Nav.Link href="#" as="span">
-            <Link style={padding} to="/blogs">Blogs</Link>
+            <Link data-cy="blogs-link" style={padding} to="/blogs">Blogs</Link>
           </Nav.Link>
           <Nav.Link href="#" as="span">
-            <Link style={padding} to="/users">Users</Link>
+            <Link data-cy="users-link" style={padding} to="/users">Users</Link>
           </Nav.Link>
           <Navbar.Text>
             {loggedInUser.name} logged in
           </Navbar.Text>
-          <Button variant="primary" onClick={handleLogout}>
+          <Button data-cy="logout" variant="primary" onClick={handleLogout}>
             Logout
           </Button>
         </Nav>
       </Navbar.Collapse>
     </Navbar>
-
-  /*     <p style={menu}>
-      <Link style={padding} to="/blogs">Blogs</Link>
-      <Link style={padding} to="/users">Users</Link>
-      {loggedInUser.name} logged in
-      <button onClick={handleLogout}>
-        Logout
-      </button>
-    </p> */
   )
 }
 

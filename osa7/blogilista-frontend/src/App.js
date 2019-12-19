@@ -24,9 +24,9 @@ function App ({ initializeBlogs, loggedInUser, setLoggedInUser }) {
   const newBlogForm = React.createRef()
 
   useEffect(() => {
-    blogService.
-      getAll().
-      then(initialBlogs => initializeBlogs(initialBlogs))
+    blogService
+      .getAll()
+      .then(initialBlogs => initializeBlogs(initialBlogs))
   }, [initializeBlogs])
 
   useEffect(() => {

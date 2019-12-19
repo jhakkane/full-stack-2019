@@ -14,9 +14,9 @@ const getAll = async () => {
 
 const createNew = (blog) => {
   const config = { headers: { Authorization: token } }
-  return axios.
-    post(baseUrl, blog, config).
-    then(response =>
+  return axios
+    .post(baseUrl, blog, config)
+    .then(response =>
       response.data
     )
 }
@@ -24,16 +24,16 @@ const createNew = (blog) => {
 const removeBlog = (id) => {
   const config = { headers: { Authorization: token } }
   const url = `${baseUrl}/${id}`
-  return axios.
-    delete(url, config)
+  return axios
+    .delete(url, config)
 }
 
 const updateBlog = (id, blog) => {
   const config = { headers: { Authorization: token } }
   const url = `${baseUrl}/${id}`
-  return axios.
-    put(url, blog, config).
-    then(response =>
+  return axios
+    .put(url, blog, config)
+    .then(response =>
       response.data
     )
 }
@@ -41,9 +41,9 @@ const updateBlog = (id, blog) => {
 const addComment = (id, comment) => {
   const config = { headers: { Authorization: token } }
   const url = `${baseUrl}/${id}/comments`
-  return axios.
-    post(url, comment, config).
-    then(response =>
+  return axios
+    .post(url, comment, config)
+    .then(response =>
       response.data
     )
 }

@@ -13,9 +13,9 @@ const UserList = ({ initializeUsers, ...props }) => {
   let match = useRouteMatch()
 
   useEffect(() => {
-    userService.
-      getAll().
-      then(users => initializeUsers(users))
+    userService
+      .getAll()
+      .then(users => initializeUsers(users))
   }, [initializeUsers])
 
   return (
@@ -30,7 +30,7 @@ const UserList = ({ initializeUsers, ...props }) => {
         {props.sortedUsers.map(user =>
           <tr key={user.id}>
             <td>
-              <Link to={`${match.path}/${user.id}`}>{user.name}</Link>
+              <Link name="user-link" to={`${match.path}/${user.id}`}>{user.name}</Link>
             </td>
             <td>
               {user.blogs.length}
