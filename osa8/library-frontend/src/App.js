@@ -22,7 +22,7 @@ const ALL_AUTHORS = gql`
       bookCount
     }
   }
-`;
+`
 
 const ALL_BOOKS = gql`
   { 
