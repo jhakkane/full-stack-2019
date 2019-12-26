@@ -1,10 +1,11 @@
 require('dotenv').config()
 const jwt = require('jsonwebtoken')
-const { ApolloServer, AuthenticationError, UserInputError, gql } = require('apollo-server')
+const { ApolloServer, AuthenticationError, UserInputError, gql, PubSub } = require('apollo-server')
 const mongoose = require('mongoose')
 const Book = require('./models/book')
 const Author = require('./models/author')
 const User = require('./models/user')
+const pubsub = new PubSub()
 
 const JWT_SECRET = 'NEED_HERE_A_SECRET_KEY'
 mongoose.set('useFindAndModify', false);
@@ -40,6 +41,10 @@ const typeDefs = gql`
     favoriteGenre: String!
     id: ID!
   }
+
+  type Subscription {
+    bookAdded: Book!
+  }    
   
   type Token {
     value: String!
@@ -105,7 +110,7 @@ const getOrCreateAuthor = async (name) => {
 
 const resolvers = {
   Author: {
-    bookCount: (root) => Book.count({'author': root.id})
+    bookCount: root => root.books ? root.books.length : 0
   },
   Mutation: {
     addBook: async (root, args, context) => {
@@ -120,6 +125,9 @@ const resolvers = {
       })
 
       await tryToSave(book, args)
+      author.books = author.books.concat(book._id)
+      await tryToSave(author, args)
+      pubsub.publish('BOOK_ADDED', { bookAdded: book })
       return book
     },
     editAuthor: async (root, args, context) => {
@@ -164,7 +172,12 @@ const resolvers = {
     bookCount: () => Book.count({}),
     authorCount: () =>  Author.count({}),
     me: (root, args, context) => context.currentUser
-  }
+  },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator(['BOOK_ADDED'])
+    },
+  },
 }
 
 const getBooks = async (root, args) => {

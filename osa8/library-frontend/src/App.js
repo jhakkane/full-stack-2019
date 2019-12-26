@@ -5,20 +5,27 @@ import NewBook from './components/NewBook'
 import Login from './components/Login'
 import Recommendations from './components/Recommendations'
 import { gql } from 'apollo-boost'
-import { useMutation, useApolloClient } from '@apollo/react-hooks';
-import { useQuery } from '@apollo/react-hooks'
+import { useMutation, useSubscription, useApolloClient, useQuery } from '@apollo/react-hooks';
+
+const BOOK_DETAILS = gql`
+  fragment BookDetails on Book {
+    id
+    title
+    author {
+      name
+    }, 
+    published,
+    genres
+  }
+`
 
 const ADD_BOOK = gql`
   mutation addBook($title: String!, $author: String!, $published: Int!, $genres: [String!]!) {
     addBook(title: $title, author: $author, published: $published, genres: $genres) {
-      title, 
-      author {
-        name
-      }, 
-      published,
-      genres
+      ...BookDetails
     }
   }
+  ${BOOK_DETAILS}
 `
 
 const ALL_AUTHORS = gql`
@@ -34,15 +41,10 @@ const ALL_AUTHORS = gql`
 const ALL_BOOKS = gql`
   query allBooks($genre: String) { 
     allBooks(genre: $genre) {
-      title,
-      author {
-        name
-      },
-      published,
-      genres,
-      id
+      ...BookDetails
     }
   }
+  ${BOOK_DETAILS}
 `
 
 const LOGIN = gql`
@@ -59,6 +61,15 @@ const UPDATE_AUTHOR = gql`
     name, born
   }
  }
+`
+
+const BOOK_ADDED = gql`
+  subscription {
+    bookAdded {
+      ...BookDetails
+    }
+  }
+  ${BOOK_DETAILS}
 `
 
 const ME = gql`
@@ -110,6 +121,26 @@ const App = () => {
       refetchQueries: [{query: ALL_AUTHORS}]
     }
   )
+
+  const updateBookCache = (newBook) => {
+    const includedIn = (set, object) => 
+      set.map(p => p.id).includes(object.id)  
+    const dataInStore = client.readQuery({ query: ALL_BOOKS })
+    if (!includedIn(dataInStore.allBooks, newBook)) {
+      client.writeQuery({
+        query: ALL_BOOKS,
+        data: { allBooks : dataInStore.allBooks.concat(newBook) }
+      })
+    }   
+  }
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      const newBook = subscriptionData.data.bookAdded
+      window.alert(`Book ${newBook.title} added.`)
+      updateBookCache(newBook)
+    }
+  })
 
   const logout = () => {
     setToken(null)
