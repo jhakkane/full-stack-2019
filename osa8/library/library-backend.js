@@ -97,6 +97,7 @@ const getOrCreateAuthor = async (name) => {
   if (!existingAuthor) {
     const newAuthor = new Author({name})
     await tryToSave(newAuthor, name)
+    return newAuthor
   } else {
     return existingAuthor
   }
@@ -109,7 +110,6 @@ const resolvers = {
   Mutation: {
     addBook: async (root, args, context) => {
       assertUserIsLoggedIn(context)
-      console.log(context)
 
       const author = await getOrCreateAuthor(args.author)
       const book = new Book({

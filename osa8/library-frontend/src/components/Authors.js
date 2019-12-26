@@ -1,7 +1,7 @@
 import React from 'react'
 import AuthorEditor from '../components/AuthorEditor'
 
-const Authors = ({ authorData, show, updateAuthor }) => {
+const Authors = ({ authorData, loggedIn, show, updateAuthor }) => {
 
   if (!show) {
     return null
@@ -19,7 +19,9 @@ const Authors = ({ authorData, show, updateAuthor }) => {
       <table>
         <tbody>
           <tr>
-            <th></th>
+            <th>
+              author
+            </th>
             <th>
               born
             </th>
@@ -37,7 +39,7 @@ const Authors = ({ authorData, show, updateAuthor }) => {
         </tbody>
       </table>
       
-      <AuthorEditor updateAuthor={updateAuthor} authors={authors} />
+      {loggedIn && <AuthorEditor updateAuthor={updateAuthor} authors={authors} />}
     </div>
   )
 }
